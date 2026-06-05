@@ -8,6 +8,19 @@ Before doing anything else in a session, read both companion files:
 
 ---
 
+## Available Skills
+
+Invoke these on demand by referencing them in your prompt:
+
+| Skill file | When to invoke |
+|---|---|
+| `.github/prompts/accessibility-review.prompt.md` | Before any frontend PR, or when asked to audit HTML/CSS for accessibility |
+| `.github/prompts/api-hardening.prompt.md` | Before any API PR, or when asked to review a C# endpoint for security issues |
+
+Skills **report only** — they do not make changes. After running a skill, decide which findings to act on and implement fixes separately.
+
+---
+
 ## How to use `instructions.md`
 
 `instructions.md` is the standing rulebook for this codebase.
