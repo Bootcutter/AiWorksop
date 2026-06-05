@@ -17,4 +17,18 @@ public class ProductRepository
 
     public Product? GetById(int id) =>
         _products.FirstOrDefault(p => p.Id == id);
+
+    public IReadOnlyList<Product> Search(string? term)
+    {
+        if (string.IsNullOrWhiteSpace(term))
+            return _products;
+
+        var normalised = term.Trim();
+        return _products
+            .Where(p =>
+                p.Name.Contains(normalised, StringComparison.OrdinalIgnoreCase) ||
+                p.Description.Contains(normalised, StringComparison.OrdinalIgnoreCase) ||
+                p.Category.Contains(normalised, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
 }

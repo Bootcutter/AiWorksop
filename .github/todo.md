@@ -8,7 +8,8 @@ Implement in order — each item builds on the previous.
 ---
 
 ## 1 — Live search bar + result count
-**Status:** not started
+**Status:** done (2026-06-05)
+**Implemented:** server-side search via `GET /api/products/search?q=`, 200ms debounce, `applyFiltersAndRender()` pipeline, `aria-live` result count.
 
 - Text input above the grid, debounced 200ms
 - Filters cards client-side across `name`, `description`, and `category` fields (case-insensitive)
@@ -58,3 +59,19 @@ Implement in order — each item builds on the previous.
 - Message must be specific: "No products in Electronics match 'thunderbolt'" — not a generic "No results"
 - "Clear filters" link resets search + category simultaneously
 - Distinct from the API error state (network failure vs. valid-but-empty filter result)
+
+---
+
+## 6 — Skill findings backlog (Low severity)
+
+Findings from api-hardening and accessibility-review skill gates run on 2026-06-05.
+
+### API Hardening — Low
+**6a** — `q` parameter is bound twice (query string + `[FromQuery]` implicit); make binding explicit with `[FromQuery(Name = "q")]` to avoid ambiguity if Minimal API defaults change.  
+**6b** — CORS allowed origin `https://bootcutter.github.io` is a magic string; move to `appsettings.json` or an environment variable so it can differ per environment without a code change.  
+**6c** — No authentication on any endpoint (intentional for this workshop); document the decision in `memory.md` and add an `// no-auth: intentional` comment near the CORS/auth setup so future reviewers don't treat it as an oversight.
+
+### Accessibility — Low
+**6d** — `<search>` element has limited screen reader support on older AT; swap to `<form role="search">` for broader compatibility (VoiceOver + NVDA on older browsers).  
+**6e** — `aria-live="polite"` result count is silent on first page load because AT ignores live region content that was present in the DOM at parse time; populate it after a short delay or inject it dynamically only after the first fetch completes.  
+**6f** — Search input placeholder contrast is ~4.2:1 (just below 4.5:1 WCAG AA for normal text); darken placeholder colour to meet the threshold, or remove placeholder text and rely solely on the `<label>`.

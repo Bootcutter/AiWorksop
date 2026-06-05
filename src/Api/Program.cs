@@ -33,6 +33,17 @@ app.MapGet("/api/products", (ProductRepository repo) =>
     Results.Ok(repo.GetAll()))
 .WithName("GetProducts");
 
+// Must be registered before /api/products/{id:int} to avoid route conflict
+app.MapGet("/api/products/search", (string? q, ProductRepository repo) =>
+{
+    if (q is not null && q.Length > 100)
+        return Results.Problem(
+            detail: "Search term must not exceed 100 characters.",
+            statusCode: StatusCodes.Status400BadRequest);
+    return Results.Ok(repo.Search(q));
+})
+.WithName("SearchProducts");
+
 app.MapGet("/api/products/{id:int}", (int id, ProductRepository repo) =>
 {
     var product = repo.GetById(id);

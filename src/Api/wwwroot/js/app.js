@@ -5,11 +5,17 @@ const API_BASE = (window.location.hostname === 'localhost' || window.location.ho
   : 'http://localhost:5090/api';
 
 /**
- * Fetches all products from the API.
- * @returns {Promise<Array>} Resolves to the product array.
+ * Fetches products from the API, optionally filtered by a search query.
+ * All callers must go through this function — do not construct URLs elsewhere.
+ * @param {string} [query] - Optional search term; omit or pass empty string for all products.
+ * @returns {Promise<Array>}
  */
-async function fetchProducts() {
-  const response = await fetch(`${API_BASE}/products`);
+async function fetchProducts(query) {
+  const url = query && query.trim()
+    ? `${API_BASE}/products/search?q=${encodeURIComponent(query.trim())}`
+    : `${API_BASE}/products`;
+
+  const response = await fetch(url);
 
   if (!response.ok) {
     const problem = await response.json().catch(() => null);
@@ -18,6 +24,20 @@ async function fetchProducts() {
   }
 
   return response.json();
+}
+
+/**
+ * Returns a debounced version of fn, delaying execution by wait ms.
+ * @param {Function} fn
+ * @param {number} wait
+ * @returns {Function}
+ */
+function debounce(fn, wait) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), wait);
+  };
 }
 
 /**
@@ -69,24 +89,34 @@ function escapeHtml(str) {
 }
 
 /**
- * Entry point — fetches products and renders them into the grid.
+ * Single pipeline for fetching and rendering products.
+ * All controls (search, future filters) must call this — never fetch directly.
+ * @param {string} [query]
  */
-async function init() {
-  const grid   = document.getElementById('product-grid');
-  const errEl  = document.getElementById('error-message');
+async function applyFiltersAndRender(query) {
+  const grid    = document.getElementById('product-grid');
+  const errEl   = document.getElementById('error-message');
+  const countEl = document.getElementById('result-count');
 
+  errEl.hidden = true;
+  grid.setAttribute('aria-busy', 'true');
   showSkeletons(grid);
 
   try {
-    const products = await fetchProducts();
+    const products = await fetchProducts(query);
 
     grid.innerHTML = '';
     grid.setAttribute('aria-busy', 'false');
 
     if (products.length === 0) {
-      grid.innerHTML = '<li class="product-card"><p>No products found.</p></li>';
+      const term = query && query.trim() ? query.trim() : '';
+      countEl.textContent = term
+        ? `No products match your search for "${escapeHtml(term)}"`
+        : 'No products found.';
       return;
     }
+
+    countEl.textContent = `Showing ${products.length} product${products.length === 1 ? '' : 's'}`;
 
     const fragment = document.createDocumentFragment();
     products.forEach(p => fragment.appendChild(createProductCard(p)));
@@ -96,8 +126,24 @@ async function init() {
     grid.setAttribute('aria-busy', 'false');
     errEl.textContent = `Could not load products: ${err.message}`;
     errEl.hidden = false;
+    countEl.textContent = '';
     console.error('[Products] fetch failed', err);
   }
+}
+
+/**
+ * Entry point.
+ */
+function init() {
+  const searchInput = document.getElementById('search-input');
+
+  const onSearch = debounce((e) => {
+    applyFiltersAndRender(e.target.value);
+  }, 200);
+
+  searchInput.addEventListener('input', onSearch);
+
+  applyFiltersAndRender();
 }
 
 init();
