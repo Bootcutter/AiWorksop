@@ -1,5 +1,6 @@
 ---
-description: "Audits C# Minimal API endpoints for security and hardening issues. Flags missing input validation, authorization gaps, raw exception exposure, injection risks, and sensitive data leakage. Returns a severity-graded findings table."
+description: "Audits C# Minimal API endpoints for security and hardening issues. Flags missing input validation, authorization gaps, raw exception exposure, injection risks, and sensitive data leakage. Returns a severity-graded findings table. Invoke when asked to check api hardening, security review, harden endpoint, or audit api."
+applyTo: "src/Api/**/*.cs"
 ---
 
 # Skill: C# API Hardening

@@ -1,5 +1,6 @@
 ---
-description: "Audits HTML and CSS files for accessibility issues. Checks semantic structure, ARIA usage, keyboard navigation, colour contrast, and form labelling. Returns a severity-graded findings table."
+description: "Audits HTML and CSS files for accessibility issues. Checks semantic structure, ARIA usage, keyboard navigation, colour contrast, and form labelling. Returns a severity-graded findings table. Invoke when asked to check accessibility, audit html, review frontend, or a11y."
+applyTo: "src/Api/wwwroot/**/*.{html,css}"
 ---
 
 # Skill: Frontend Accessibility Reviewer

@@ -12,12 +12,24 @@ Before doing anything else in a session, read both companion files:
 
 Invoke these on demand by referencing them in your prompt:
 
-| Skill file | When to invoke |
-|---|---|
-| `.github/prompts/accessibility-review.prompt.md` | Before any frontend PR, or when asked to audit HTML/CSS for accessibility |
-| `.github/prompts/api-hardening.prompt.md` | Before any API PR, or when asked to review a C# endpoint for security issues |
+| Skill file | Freeform phrases that trigger it | `#`-reference |
+|---|---|---|
+| `.github/prompts/accessibility-review.prompt.md` | "check accessibility", "audit html", "review frontend", "a11y" | `#accessibility-review.prompt.md` |
+| `.github/prompts/api-hardening.prompt.md` | "check api hardening", "security review", "harden endpoint", "audit api" | `#api-hardening.prompt.md` |
 
-Skills **report only** — they do not make changes. After running a skill, decide which findings to act on and implement fixes separately.
+When you recognise any of the above phrases in a user message, automatically load and apply the corresponding skill file before responding.
+
+Skills **report only** — they do not make changes. After running a skill, present the findings table and wait for the user to decide what to act on.
+
+---
+
+## Automatic skill gates — agentic workflow rules
+
+These rules apply whenever you are acting autonomously across multiple steps.
+
+**API gate:** After any task that creates or modifies a file matching `src/Api/**/*.cs`, you **must** run the api-hardening skill against the changed files before considering the task complete. Present the findings table as part of your completion summary. If any High severity findings are present, flag them explicitly and ask whether to fix them before closing the task.
+
+**Frontend gate:** After any task that creates or modifies a file matching `src/Api/wwwroot/**/*.html` or `src/Api/wwwroot/**/*.css`, you **must** run the accessibility-review skill against the changed files before considering the task complete. Present the findings table as part of your completion summary. If any High severity findings are present, flag them explicitly and ask whether to fix them before closing the task.
 
 ---
 
