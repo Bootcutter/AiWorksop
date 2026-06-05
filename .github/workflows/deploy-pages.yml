@@ -23,7 +23,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: githubpages
+          publish_branch: GithubPages
           publish_dir: src/Api/wwwroot
           force_orphan: false          # keep history on the branch
           commit_message: "chore: deploy frontend from ${{ github.sha }}"
