@@ -5,6 +5,12 @@ Append new entries — never delete old ones. Superseded entries get a ~~striket
 
 ---
 
+## Must-read at session startup
+
+- **`.github/todo.md`** — active improvement backlog. Check this before any frontend work. Do not implement items not listed here without adding them first.
+
+---
+
 ## Facts
 
 Facts describe what is currently true about the codebase.
