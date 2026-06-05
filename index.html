@@ -15,6 +15,20 @@
   </header>
 
   <main class="container" id="main">
+    <search role="search" class="search-bar" aria-label="Search products">
+      <label for="search-input" class="search-bar__label">Search products</label>
+      <input
+        type="search"
+        id="search-input"
+        class="search-bar__input"
+        placeholder="e.g. keyboard, monitor…"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </search>
+
+    <p id="result-count" class="result-count" aria-live="polite" aria-atomic="true"></p>
+
     <section aria-label="Product list">
       <div id="product-grid" class="product-grid" role="list" aria-live="polite" aria-busy="true">
         <!-- Cards are injected by app.js -->
