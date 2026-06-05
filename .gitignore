@@ -1,0 +1,23 @@
+# .NET artefacts
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Publish output
+publish/
+out/
+
+# Secrets (never commit these)
+**/appsettings.*.json
+!**/appsettings.Development.json
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
