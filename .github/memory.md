@@ -29,11 +29,8 @@ Findings are things discovered during work — bugs caught, assumptions confirme
 
 - **2026-06-05** — NuGet restore against `https://api.nuget.org/v3/index.json` fails in this environment (network proxy returns HTML, not JSON). Build only works with packages already in the local cache.
 
----
-
-## Decisions
-
-Decisions record choices made and the reasoning behind them.
+- **2026-06-05** — Search endpoint `GET /api/products/search?q={term}` added. Logic lives in `ProductRepository.Search(string?)`. Registered before `{id:int}` route to avoid conflict. Empty/whitespace `q` returns all products. Case-insensitive match across Name, Description, Category.
+- **2026-06-05** — `applyFiltersAndRender(query?)` is the single pipeline for all fetch+render operations in `app.js`. All controls must call this — never call `fetchProducts()` directly from event handlers.
 
 - **2026-06-05** — Removed `Microsoft.AspNetCore.OpenApi` from the project to allow offline builds. Can be re-added once network/NuGet access is confirmed.
 - **2026-06-05** — CORS policy (`DevPolicy`) is applied in the Development environment only. Origins are explicit (`localhost:5000`, `localhost:7000`, `127.0.0.1:5500`) — no wildcard `*`.
