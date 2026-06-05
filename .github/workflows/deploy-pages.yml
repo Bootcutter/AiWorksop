@@ -1,0 +1,29 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/Api/wwwroot/**'
+
+  workflow_dispatch:   # allow manual trigger from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Deploy wwwroot to githubpages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: githubpages
+          publish_dir: src/Api/wwwroot
+          force_orphan: false          # keep history on the branch
+          commit_message: "chore: deploy frontend from ${{ github.sha }}"

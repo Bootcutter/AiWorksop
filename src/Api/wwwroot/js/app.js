@@ -1,4 +1,8 @@
-const API_BASE = '/api';
+// When served locally by the .NET app, use a relative path.
+// When served from GitHub Pages, the API is still running on localhost.
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? '/api'
+  : 'http://localhost:5090/api';
 
 /**
  * Fetches all products from the API.
